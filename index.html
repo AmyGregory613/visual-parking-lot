@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <center><img src="images/parkinglot.jpg" style="height:600px;"></center>
+    
+    <script type="text/javascript">
+	// TODO: add spaceNumber as an attribute to the space and space div in the Space and .paint() functions
+	// TODO: create a function that gets a random space and assigns it to your car
+	// TODO: Add spaceNumber to your car function
+	// TODO: make a function that takes the spacenumber and figures out which quadrant the space is in.
+	// TODO: pass the quadrant to another function that coordinates which intersection the car will turn at.
+	// TODO: make functions that move the car up, down, left, and right;
+
+
+    var unparkedCars = [];
+    var parkedCars = [];
+    var unusedSpaces = [];
+    var usedSpaces = [];
+    var images = [];
+    var carAtEntrance = null;
+    var carInTransit = null;
+  
+    function Opening(top, left, width){
+    	this.top = top;
+    	this.left = left;
+    	this.width = width;
+    }
+    var entrance = new Opening (650, 360, 115);
+    var exit = new Opening (650, 787, 111);
+
+    // var parkingSpace = function(id, vacant) {
+    //     this.id = id;
+    //     this.vacant = true;
+    // }
+
+    // //var name = function then name is lowercase; when declaring function, the Name must be uppercase
+    // function Space(id, top, left, width, height, openSide) {
+    // 	this.id = id;
+    //     this.top = top;
+    //     this.left = left;
+    //     this.width = width;
+    //     this.height = height;
+    //     this.openSide = openSide; //direction of box opening (right, left, top, bottom)
+    //     this.projection = new Projection(top, left, width, height, openSide); //shadowbox or target at which the car aims when looking for the parking space
+    //     this.paint = () => {
+	   //      let space = document.createElement('div');
+	   //      space.setAttribute('style', `position:absolute; top:${this.top}px; left: ${this.left}px; width: ${this.width}px; height: ${this.height}px; border: solid 1px red;`);
+
+	   //      document.body.appendChild(space);
+    // 	}
+    // 	unusedSpaces.push(this);
+    // }
+
+let availableSpaces = [];
+let spacesTaken = [];
+
+let spaceIdCounter = 1;
+let spaceNumber = Math.floor(Math.random() * 31) + 1;
+
+// let intervalId;
+
+function Space(top, left, width, height, isTaken, spaceId) {
+    this.top = top;
+    this.left = left;
+    this.width = width;
+    this.height = height;
+    this.isTaken = isTaken;
+    this.spaceId = spaceIdCounter;
+
+    this.setTimer = (time) => {
+        console.log(time);
+    }
+
+    this.paint = () => {
+        // let parkingLot = document.getElementById('parkingLot');
+        let space = document.createElement('div');
+        space.setAttribute('space-id', this.spaceId);
+        space.setAttribute('style', `position:absolute; top:${this.top}px; left: ${this.left}px; width: ${this.width}px; height: ${this.height}px; border:solid 1px red;`);
+        document.body.appendChild(space)
+    }
+
+    availableSpaces.push(this.spaceId);
+    spaceIdCounter++;
+}
+//T.A.s new slant on the project
+function createParkingLot(opening, numOfSpaces){
+    let sideRailCounter = 30;
+    let topMiddleRailCounter = 380;
+    let middleRailCounter = 305;
+
+    for(let i = 0; i < numOfSpaces; i++){
+        if(opening === 'left'){
+            new Space(sideRailCounter, 35, 134, 74, false).paint();
+            sideRailCounter = sideRailCounter + 74;
+
+        } else if (opening === 'right'){
+            new Space(sideRailCounter, 800, 134, 74, false).paint();
+            sideRailCounter = sideRailCounter + 74;
+
+        } else if (opening === 'top'){
+            new Space(35, topMiddleRailCounter, 74, 134, false).paint();
+            topMiddleRailCounter = topMiddleRailCounter + 74;
+
+        } else if (opening === 'middle'){
+            new Space(298, middleRailCounter, 74, 134, false).paint();
+            middleRailCounter = middleRailCounter + 74;
+
+        } else if (opening === 'bottom') {
+            new Space(558, middleRailCounter, 74, 134, false).paint();
+            middleRailCounter = middleRailCounter + 74;
+        }
+    }
+}
+createParkingLot('left', 9);
+createParkingLot('right', 8);
+createParkingLot('top', 4);
+createParkingLot('middle', 5);
+createParkingLot('bottom', 5);
+
+    function Projection(top, left, width, height, openSide) {
+
+        this.width = width;
+        this.height = height;
+
+        if (openSide === 'right') {
+            this.left = left + width;
+            this.top = top;
+        } else if (openSide === 'left') {
+            this.left = left - width;
+            this.top = top;
+        } else if (openSide === 'top') {
+            this.top = top - height;
+            this.left = left;
+        } else if (openSide === 'bottom') {
+            this.top = top + height;
+            this.left = left;
+        }
+    }
+    //  LAST YEAR'S CODE
+
+    // // new Space(top, left, width, height, orientation, direction);
+
+    // // var unusedSpaces = [
+    //     //left column
+    //     new Space(5, 236, 116, 65, 'right').paint(),
+    //     new Space(70, 236, 116, 65, 'right').paint(),
+    //     new Space(135, 236, 116, 65, 'right').paint(),
+    //     new Space(200, 236, 116, 65, 'right').paint(),
+    //     new Space(265, 236, 116, 65, 'right').paint(),
+    //     new Space(330, 236, 116, 65, 'right').paint(),
+    //     new Space(395, 236, 116, 65, 'right').paint(),
+    //     new Space(460, 236, 116, 65, 'right').paint(),
+    //     new Space(525, 236, 116, 65, 'right').paint(),
+    //     // middle top
+    //     // new Space(12, 470, 63, 120, direction),			
+    //     new Space(12, 533, 63, 120, 'bottom').paint(),
+    //     new Space(12, 596, 63, 120, 'bottom').paint(),
+    //     new Space(12, 659, 63, 120, 'bottom').paint(),
+    //     new Space(12, 722, 63, 120, 'bottom').paint(),
+    //     // middle middle
+    //     new Space(238, 469, 65, 117, 'top').paint(),
+    //     new Space(238, 530, 65, 117, 'top').paint(),
+    //     new Space(238, 593, 65, 117, 'top').paint(),
+    //     new Space(238, 656, 65, 117, 'top').paint(),
+    //     new Space(238, 713, 65, 117, 'top').paint(),
+    //     // middle bottom
+    //     new Space(463, 468, 63, 120, 'top').paint(),
+    //     new Space(463, 531, 63, 120, 'top').paint(),
+    //     new Space(463, 594, 63, 120, 'top').paint(),
+    //     new Space(463, 657, 63, 120, 'top').paint(),
+    //     new Space(463, 720, 63, 120, 'top').paint(),
+    //     // right column
+    //     new Space(12, 897, 116, 65, 'left').paint(),
+    //     new Space(76, 897, 116, 65, 'left').paint(),
+    //     new Space(140, 897, 116, 65, 'left').paint(),
+    //     new Space(204, 897, 116, 65, 'left').paint(),
+    //     new Space(268, 897, 116, 65, 'left').paint(),
+    //     new Space(332, 897, 116, 65, 'left').paint(),
+    //     new Space(396, 897, 116, 65, 'left').paint(),
+    //     new Space(460, 897, 116, 65, 'left').paint(),
+    //     // new Space(532, 897, width, height, openSide),
+    // // ];
+    // console.log(unusedSpaces);
+        
+var carImages = ['car-aqua.png', 'car-blue.png', 'car-dragon.png', 'car-green.png', 'car-grey.png', 'car-hot-pink.png', 'car-lime-green.png', 'car-orange.png', 'car-purple.png', 'car-red-stripes.png', 'car-red.png', 'car-white.png', 'car-yellow.png'];
+
+    //Put next car from unparkedCars at entrance
+    function setCarInitialPosition(car) {
+    	var centerCar = (entrance.width - car.width) / 2
+        car.style.transform = "rotate(-90deg)";
+        car.style.top = (entrance.top) + 'px';
+        car.style.left = (entrance.left + centerCar) + 'px';
+    }
+    
+    //create cars
+
+    function Car(carImage, height, width) {
+        this.carImage = carImage;
+        this.height = height;
+        this.width = width;
+        this.element = null;
+        this.space = null;
+    }
+
+//To-do: need to randomly assign image
+    function createCarImage(car) {
+        var carImage = document.createElement('img');
+        carImage.setAttribute('src', 'images/' + car.carImage);
+        carImage.setAttribute('class', 'car');
+        document.body.appendChild(carImage);
+        
+        car.element = carImage;//????????????????????
+
+        setCarInitialPosition(carImage);
+    }
+
+    // function createCars(count) {
+
+    //     for (var i = 0; i < count; i++) {
+    //     	var index = i % carImages.length;
+    //     	var image = carImages[index];
+           
+    //         unparkedCars.push(new Car(image));
+    //     }
+    //     console.dir(unparkedCars);
+
+    // }
+    // createCars(100);
+    // var car = unparkedCars[0];
+    // createCarImage(car);
+
+    //Create interesections
+    function Intersection(top, left, width, height) {
+        this.top = top;
+        this.left = left;
+        this.width = width;
+        this.height = height;
+    }
+
+	let intersection1 = new Intersection(143, 331, 124, 118);
+	let intersection2 = new Intersection(380, 796, 121, 120);
+	let intersection3 = new Intersection(381, 334, 123, 121);
+	let intersection4 = new Intersection(134, 797, 119, 125);
+
+
+    function tick() {
+        var car = identifyCarToPark();
+        console.log(car);
+        if (car !== null) {
+            var space = findAvailableSpace();
+            console.log(space);
+            if (space !== null) {
+                driveCarToSpace(car, space);
+            }
+        } 
+        // else{
+        // 	clearInterval(intervalId);
+        // 	console.log("Done!");
+        // }
+    }
+
+    var intervalId = setInterval(tick, 500);
+
+    function identifyCarToPark() {
+        if (carInTransit !== null) {
+            return carInTransit;
+        } else if (carAtEntrance !== null) {
+            return carAtEntrance;
+        } else if (unparkedCars.length > 0) {
+            return unparkedCars.shift();
+        } else {
+            return null;
+        }
+    }
+
+    //Create function to assign parking space to next car needing to park
+    function findAvailableSpace() {
+    	if(carInTransit!== null){
+    		return carInTransit.space;
+    	} 
+    	if(unusedSpaces.length > 0){
+    		return unusedSpaces.shift();
+    	} 
+    	return null; 
+    	
+    }
+    function driveCarForward(car){
+    	car.element.style.top = `${parseInt(car.element.style.top.replace("px"," ")) - 10}px`;
+    }
+//make car move - 1) is the car already in transit?, 2) Is the car at the starting spot?, 3) Is the car waiting outside the lot?
+//figure out the next movement
+
+    function driveCarToSpace(car, space) {
+    	console.log ("Driving car to space");
+    	car.space = space;//??????????????????????
+        if(carInTransit === car){
+        	continueDrivingCarToSpace(car);
+        	return;
+        } 
+        if(carAtEntrance === car){
+        	enterParkinglot(car);
+
+        	carAtEntrance = null;
+        	carInTransit = car;
+        	return;
+        } 
+
+        drawCarAtEntrance(car);
+        carAtEntrance = car;
+
+    }
+
+    function continueDrivingCarToSpace(car){
+    	driveCarForward(car);
+    	stopAtIntersection(car);
+    	console.log("Driving car to space")
+    }
+
+    function enterParkinglot(car){
+    	car.element.style.top = `${parseInt(car.element.style.top.replace("px","")) - 10}px`;
+    	console.log("Entering parkinglot")
+    }
+
+    function drawCarAtEntrance(car){
+    	createCarImage(car);
+
+    }
+    function stopHere(car, intersection){
+    	
+    	setTimeout(function(){
+    		console.log('function stopHere', car, intersection);
+    	},3000)
+    }
+
+    function stopAtIntersection(car){
+    	console.log('Stop at INtersection', car);
+    	
+	    	var carAtIntersection = stopHere(car, intersection1)
+	    	// console.log(carAtIntersection);
+	    	if (carAtIntersection === true)
+	    		return Intersection;
+	}
+    //   function exit (){
+    // 	car.style.top =
+    // 	car.style.left =
+    // }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>CSS Rotate</title>
+	<style>
+	img {
+		transition: all 2s;
+		position: absolute;
+		top: 100px;
+		left: 100px;
+	}
+	</style>
+</head>
+
+<body>
+	<input type="button" value="Rotate Clockwise" onclick="rotateCar(0);" />
+	<input type="button" value="Rotate Counter-Clockwise" onclick="rotateCar(1);" />
+	<img src="car.png" />
+	<script>
+	var totalDegreesRotated = 0;
+	var rotateCar = function(direction) {
+		var degreesToIncrement;
+		if (direction == 0) {
+			degreesToIncrement = 90;
+		} else {
+			degreesToIncrement = -90;
+		}
+		totalDegreesRotated = totalDegreesRotated + degreesToIncrement;
+		document.querySelector("img").style.transform = `rotate(${totalDegreesRotated}deg)`;
+	}
+	</script>
+</body>
+
+</html>
